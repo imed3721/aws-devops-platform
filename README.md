@@ -2,9 +2,9 @@
 
 **Infrastructure as Code · CI/CD Automation · AWS Networking · Drift Detection · Secure Cloud Operations**
 
-An AWS DevOps portfolio project demonstrating how to provision, validate, deploy, monitor, troubleshoot, and destroy cloud infrastructure using Terraform and GitHub Actions.
+An AWS DevOps portfolio project demonstrating the end-to-end lifecycle of cloud infrastructure: provisioning, automated deployment, monitoring, drift detection, troubleshooting, and controlled teardown.
 
-The project combines AWS infrastructure automation with GitHub Actions CI/CD, OpenID Connect (OIDC) authentication, remote Terraform state management, private database networking, CloudWatch monitoring, infrastructure drift detection, and controlled teardown.
+Built with Terraform, AWS, and GitHub Actions, this project demonstrates Infrastructure as Code (IaC), secure OIDC authentication, remote state management, private database networking, operational monitoring, and infrastructure lifecycle management.
 
 **Technology stack**
 
@@ -12,7 +12,7 @@ The project combines AWS infrastructure automation with GitHub Actions CI/CD, Op
 ![Terraform](https://img.shields.io/badge/Terraform-Infrastructure%20as%20Code-7B42BC)
 ![GitHub Actions](https://img.shields.io/badge/GitHub%20Actions-CI%2FCD-2088FF)
 ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-Database-4169E1)
-![OIDC](https://img.shields.io/badge/OIDC-Keyless%20Authentication-green)
+![OIDC](https://img.shields.io/badge/OIDC-Federated%20Authentication-green)
 
 **Repository:** [imed3721/aws-devops-platform](https://github.com/imed3721/aws-devops-platform)
 
@@ -20,99 +20,100 @@ The project combines AWS infrastructure automation with GitHub Actions CI/CD, Op
 
 ## Table of Contents
 
-- [Project Overview](#project-overview)
-- [Objectives](#objectives)
-- [Architecture](#architecture)
-- [AWS Infrastructure](#aws-infrastructure)
-- [Security and Access Control](#security-and-access-control)
-- [CI/CD and Terraform Workflows](#cicd-and-terraform-workflows)
-- [Infrastructure Drift Detection](#infrastructure-drift-detection)
-- [Cleanup and Final State](#cleanup-and-final-state)
-- [Repository Structure](#repository-structure)
-- [Project Evidence and Screenshots](#project-evidence-and-screenshots)
-- [Key Skills Demonstrated](#key-skills-demonstrated)
-- [Challenges and Lessons Learned](#challenges-and-lessons-learned)
-- [Cost Management](#cost-management)
-- [Future Improvements](#future-improvements)
+- [1. Project Overview](#1-project-overview)
+- [2. Project Objectives](#2-project-objectives)
+- [3. Architecture](#3-architecture)
+- [4. AWS Infrastructure](#4-aws-infrastructure)
+- [5. Security and Access Control](#5-security-and-access-control)
+- [6. CI/CD and Terraform Workflows](#6-cicd-and-terraform-workflows)
+- [7. Infrastructure Drift Detection](#7-infrastructure-drift-detection)
+- [8. Cleanup and Final State](#8-cleanup-and-final-state)
+- [9. Repository Structure](#9-repository-structure)
+- [10. Project Evidence and Screenshots](#10-project-evidence-and-screenshots)
+- [11. Key Skills Demonstrated](#11-key-skills-demonstrated)
+- [12. Challenges and Lessons Learned](#12-challenges-and-lessons-learned)
+- [13. Cost Management](#13-cost-management)
+- [14. Future Improvements](#14-future-improvements)
 
-## Project Overview
+## 1. Project Overview
 
-This project demonstrates an Infrastructure as Code (IaC) workflow for managing AWS development infrastructure using Terraform and GitHub Actions.
+This project demonstrates how AWS infrastructure can be defined, deployed, monitored, and managed using Terraform and GitHub Actions rather than relying entirely on manual configuration through the AWS Management Console.
 
-Instead of manually creating and managing cloud resources through the AWS Management Console, the infrastructure is defined in Terraform configuration files and managed through automated workflows.
+Terraform defines the infrastructure as code, while GitHub Actions automates key stages of the infrastructure lifecycle, including validation, planning, deployment, and destruction.
 
-GitHub Actions handles Terraform validation, planning, deployment, and controlled destruction. GitHub OIDC provides federated authentication to AWS through an IAM role, avoiding the need to store long-lived AWS access keys in GitHub repository secrets.
+GitHub Actions authenticates to AWS using OpenID Connect (OIDC) and an IAM role, avoiding the need to store long-lived AWS access keys in GitHub for workflow authentication.
 
-The project also explores infrastructure drift: what happens when the real AWS environment differs from the Terraform configuration, how that difference can be identified, and how the intended configuration can be restored.
+The project also explores infrastructure drift: identifying differences between the intended Terraform configuration and the actual AWS environment, then reconciling those differences.
 
-The final stage focuses on controlled teardown and verification that the development infrastructure has been removed.
+Finally, a manually triggered destruction workflow demonstrates how development infrastructure can be removed in a controlled manner.
 
-## Objectives
+## 2. Project Objectives
 
 The main objectives of this project are to:
 
-- Define AWS infrastructure using reusable, version-controlled Terraform configuration.
-- Automate infrastructure validation and deployment through GitHub Actions.
-- Authenticate securely to AWS using GitHub Actions OIDC and IAM role assumption.
-- Store Terraform state remotely in Amazon S3.
-- Deploy a private Amazon RDS for PostgreSQL database within an isolated network.
-- Apply security group rules to restrict database access.
+- Define AWS infrastructure using Terraform and version control.
+- Automate Terraform validation, planning, and deployment with GitHub Actions.
+- Configure federated AWS authentication using GitHub OIDC and IAM.
+- Manage Terraform state remotely using Amazon S3 and S3 lock-file support.
+- Deploy a private Amazon RDS for PostgreSQL database.
+- Restrict database access using security groups.
 - Configure CloudWatch alarms for database CPU utilisation and available storage.
-- Investigate infrastructure drift and Terraform reconciliation.
+- Introduce, detect, and reconcile infrastructure drift.
 - Implement a manually triggered Terraform destruction workflow.
-- Verify infrastructure cleanup while retaining the remote state backend.
+- Verify resource cleanup while retaining the Terraform state backend.
 
-## Architecture
+## 3. Architecture
 
-The following diagram illustrates the main components and how they interact.
+The architecture connects the GitHub Actions automation workflow to AWS through federated authentication. Terraform manages the infrastructure and stores its state remotely in Amazon S3.
 
 ```mermaid
 flowchart TD
     A[Developer] --> B[GitHub Repository]
     B --> C[GitHub Actions]
-    
+
     C --> D[Terraform Validation]
     C --> E[Terraform Plan]
     C --> F[Terraform Apply]
     C --> G[Terraform Destroy]
-    
+
     D --> H[GitHub OIDC]
     E --> H
     F --> H
     G --> H
-    
+
     H --> I[AWS IAM Role]
-    I --> J[Terraform Provider]
-    
+    I --> J[Terraform AWS Provider]
+
     J --> K[Amazon VPC]
     K --> L[Private Subnet A]
     K --> M[Private Subnet B]
+
     L --> N[Security Groups]
     M --> N
     N --> O[Amazon RDS PostgreSQL]
-    
-    O --> P[Amazon CloudWatch Alarms]
+
+    O --> P[CloudWatch Alarms]
     O --> Q[AWS Secrets Manager]
-    
+
     J <--> R[Amazon S3 Remote State]
 ```
 
-The diagram represents the intended infrastructure and workflow design. The deployed resources are documented in the project evidence below.
+The diagram represents the project design and automation flow. Screenshots in Section 10 provide evidence of the infrastructure and workflow stages.
 
-## AWS Infrastructure
+## 4. AWS Infrastructure
 
-The Terraform configuration manages the following AWS resources.
+Terraform manages the AWS resources required for the development environment.
 
 | Component | Purpose |
 |---|---|
-| Amazon VPC | Provides an isolated virtual network for development infrastructure. |
-| Private subnets | Provide private network placement across two subnets. |
-| Security groups | Control network traffic between infrastructure components. |
+| Amazon VPC | Provides an isolated virtual network. |
+| Private subnets | Provide network placement for private resources. |
+| Security groups | Control permitted network traffic. |
 | Amazon RDS for PostgreSQL | Provides a managed relational database. |
 | RDS DB subnet group | Defines the subnets available to the database. |
-| Amazon CloudWatch alarms | Monitor database CPU utilisation and free storage. |
-| AWS Secrets Manager | Manages the RDS master password through AWS-managed integration. |
-| Amazon S3 | Stores the remote Terraform state and state lock file. |
+| Amazon CloudWatch | Monitors database CPU utilisation and free storage. |
+| AWS Secrets Manager | Integrates with RDS to manage the master password. |
+| Amazon S3 | Stores Terraform state and the state lock file. |
 
 ### Network configuration
 
@@ -123,67 +124,71 @@ Two subnets are configured:
 - `10.20.1.0/24`
 - `10.20.2.0/24`
 
-The network configuration provides the foundation for private database placement and security group-based traffic restrictions.
+Security groups control communication between the relevant infrastructure components.
 
 ### Database configuration
 
 The project uses Amazon RDS for PostgreSQL with the following configuration:
 
-- Database engine: PostgreSQL.
-- Instance class: `db.t3.micro`.
-- Public accessibility: Disabled.
-- Storage encryption: Enabled.
-- Master password management: AWS Secrets Manager integration.
-- Network placement: RDS DB subnet group using the configured subnets.
+| Setting | Configuration |
+|---|---|
+| Database engine | PostgreSQL |
+| Instance class | `db.t3.micro` |
+| Public accessibility | Disabled |
+| Storage encryption | Enabled |
+| Master password | Managed through AWS Secrets Manager |
+| Network placement | Configured RDS DB subnet group |
 
-The database security group restricts PostgreSQL ingress on port `5432` to the application security group rather than allowing unrestricted inbound database access.
+Inbound PostgreSQL traffic on port `5432` is restricted to the application security group rather than being open to unrestricted inbound access.
 
-### Monitoring
+### Monitoring and alerting
 
-Two CloudWatch alarms are configured for the database:
+Two CloudWatch alarms are configured to monitor the database:
 
 | Alarm | Threshold | Purpose |
 |---|---:|---|
 | High CPU utilisation | 80% | Identifies elevated database CPU utilisation. |
 | Low free storage | 2 GiB | Identifies when available database storage falls below the configured threshold. |
 
-These alarms demonstrate how operational monitoring resources can be defined and managed alongside the infrastructure they monitor.
+These alarms demonstrate how monitoring resources can be defined and managed alongside the infrastructure they monitor.
 
-## Security and Access Control
+## 5. Security and Access Control
 
-Security is incorporated into both the infrastructure configuration and deployment workflow.
+Security is addressed through network restrictions, federated authentication, IAM permissions, encrypted database storage, and remote state management.
 
 ### GitHub Actions OIDC
 
-GitHub Actions assumes an AWS IAM role using OpenID Connect. This avoids storing long-lived AWS access keys in GitHub for the workflow to use.
+GitHub Actions assumes an AWS IAM role through OpenID Connect. This avoids the need for long-lived AWS access keys in GitHub workflow configuration.
 
-The role's trust policy restricts which GitHub repository context can assume the role, including the configured branch and deployment environment.
+The IAM role trust policy restricts access to the configured repository context, including the authorised branch and deployment environment.
 
 ### IAM permissions
 
-The IAM role uses an identity-based policy to grant the AWS API permissions required by Terraform.
+The workflow role has permissions for the AWS operations required by Terraform, including:
 
-The policy covers the relevant operations for:
+- VPC, subnet, security group, and network interface discovery.
+- RDS instance and subnet group management.
+- CloudWatch alarm management.
+- Amazon S3 state access and lock-file operations.
+- Supporting permissions required by the configured deployment.
 
-- VPCs, subnets, security groups, and network interface discovery.
-- RDS instances and DB subnet groups.
-- CloudWatch alarms.
-- Terraform state and state locking in Amazon S3.
-- Supporting AWS services required by the configured deployment.
+The role must have sufficient permissions for both provisioning and destruction. The initial teardown attempt exposed a missing `ec2:DescribeNetworkInterfaces` permission, highlighting the importance of testing the full infrastructure lifecycle.
 
-The workflow requires sufficient permissions for both provisioning and destruction. Missing permissions can cause partial cleanup, so IAM changes should be based on actual workflow errors and follow least-privilege principles.
+IAM permissions should be scoped as narrowly as practical and updated based on the actual requirements of the workflows.
 
-### Remote state
+### Remote Terraform state
 
-Terraform state is stored in Amazon S3 using the configured backend:
+The Terraform backend uses Amazon S3 with the following configuration:
 
-- Bucket: `aws-devops-state-demi`
-- State key: `aws-devops-platform/dev/terraform.tfstate`
-- State locking: S3 lock file enabled.
+| Setting | Value |
+|---|---|
+| Bucket | `aws-devops-state-demi` |
+| State key | `aws-devops-platform/dev/terraform.tfstate` |
+| State locking | S3 lock file enabled |
 
-The remote state allows Terraform workflows to track managed infrastructure between runs. The state bucket is retained after destroying the development resources so it remains available for subsequent Terraform operations.
+Remote state allows Terraform to track managed resources between workflow runs. The state backend is retained after development infrastructure is destroyed so that the project can be managed again without recreating the backend.
 
-## CI/CD and Terraform Workflows
+## 6. CI/CD and Terraform Workflows
 
 GitHub Actions automates the Terraform lifecycle through separate workflows.
 
@@ -194,80 +199,88 @@ GitHub Actions automates the Terraform lifecycle through separate workflows.
 | Terraform Apply | Creates or updates infrastructure. |
 | Terraform Destroy | Manually initiates infrastructure removal. |
 
-### Deployment process
+### Deployment lifecycle
 
-The automated deployment follows these steps:
+The automated workflow follows these stages:
 
-1. A GitHub Actions workflow is triggered.
+1. GitHub Actions starts the selected workflow.
 2. The repository is checked out.
-3. Terraform is installed at the configured version, `1.10.5`.
+3. Terraform version `1.10.5` is installed.
 4. GitHub Actions authenticates to AWS through OIDC and the configured IAM role.
-5. Terraform initialises using the Amazon S3 remote backend.
-6. The relevant workflow executes Terraform validation, planning, or application.
-7. The workflow logs provide evidence of the result.
+5. Terraform initialises using the Amazon S3 backend.
+6. The workflow executes the relevant validation, planning, deployment, or destruction operation.
+7. Workflow logs provide evidence of the outcome.
 
-### Terraform validation
+### Validation
 
-Validation checks help identify configuration problems before infrastructure changes are applied.
+Terraform validation helps identify configuration issues before changes are deployed.
 
-### Terraform plan
+### Plan
 
-The plan workflow previews the changes Terraform proposes to make. This helps identify unexpected additions, modifications, or deletions before deployment.
+Terraform plan previews proposed changes, helping identify unexpected resource additions, modifications, or deletions before execution.
 
-### Terraform apply
+### Apply
 
-The apply workflow uses the configured AWS role to create or update the development infrastructure according to the Terraform configuration.
+Terraform apply creates or updates resources according to the Terraform configuration and the selected plan.
 
-### Terraform destroy
+### Destroy
 
-The destroy workflow is manually triggered and requires the exact confirmation text `DESTROY`.
+The Terraform Destroy workflow is manually triggered and requires the exact confirmation text `DESTROY`.
 
-It initialises Terraform, previews the resources proposed for removal, and executes the destruction operation.
+The workflow initialises Terraform, previews the resources proposed for removal, and executes the destruction operation.
 
-Because infrastructure destruction is a high-impact action, it should be run deliberately, with the plan and execution logs reviewed. The confirmation input helps reduce accidental execution, but it does not replace appropriate environment protection and review controls.
+The confirmation requirement helps reduce accidental execution, but destructive changes should still be reviewed carefully. GitHub environment protection and required reviewers can provide additional safeguards when configured.
 
-## Infrastructure Drift Detection
+## 7. Infrastructure Drift Detection
 
-Infrastructure drift occurs when the actual AWS resources no longer match the configuration and state Terraform expects to manage.
+Infrastructure drift occurs when the actual AWS environment differs from the intended Terraform configuration.
 
-This project includes a drift-testing process to demonstrate how changes made outside the normal Terraform workflow can be identified and reconciled.
+This project demonstrates a controlled drift-testing process to show how changes made outside Terraform can be identified and reconciled.
 
-The process consists of three stages:
+### Drift testing process
 
-1. **Introduce drift:** Make a controlled change to a managed resource outside Terraform.
-2. **Detect drift:** Run a Terraform plan and inspect the proposed changes.
-3. **Reconcile:** Apply the intended configuration when appropriate and verify that the resource has returned to the expected state.
+1. **Introduce drift:** Make a controlled change to a managed AWS resource outside Terraform.
+2. **Detect drift:** Run Terraform plan and inspect the differences between the actual and expected configuration.
+3. **Reconcile drift:** Apply the intended configuration when appropriate and verify the resulting state.
 
-The screenshots in Section D document this process.
+The screenshots in Section D document these stages.
 
-Drift detection is important because manual changes can create configuration inconsistencies, weaken security controls, and make future deployments less predictable.
+Drift detection is important because manual changes can introduce configuration inconsistencies, weaken security controls, and make future deployments less predictable.
 
-A Terraform plan helps reveal differences, but the result depends on the resource, provider behaviour, current state, and whether the change is represented in the configuration. Plans should therefore be reviewed rather than applied automatically without consideration.
+Terraform plans should be reviewed before application. The detected changes depend on the resource, provider behaviour, state, and configuration, so the plan should be treated as a reviewable proposal rather than automatically applied without inspection.
 
-## Cleanup and Final State
+## 8. Cleanup and Final State
 
 The project includes a dedicated GitHub Actions workflow for removing the development infrastructure.
 
-The cleanup process demonstrates:
+The teardown process demonstrates:
 
 - Manual workflow triggering.
 - Explicit confirmation before destructive execution.
-- Terraform's destroy planning and execution.
-- Troubleshooting permissions required to remove AWS resources.
-- Verification that the intended resources have been removed.
+- Terraform destroy planning and execution.
+- Troubleshooting IAM permissions and resource dependencies.
+- Verification of the final infrastructure state.
 - Retention of the remote Terraform state backend.
 
-During the initial cleanup attempt, deletion of network resources failed because the workflow role lacked `ec2:DescribeNetworkInterfaces`. The IAM policy was updated to address that specific permission error.
+### Teardown troubleshooting
 
-This illustrates an important operational lesson: successful provisioning does not automatically guarantee successful destruction. Terraform needs appropriate permissions to inspect dependencies and remove resources in the correct order.
+During the initial destroy attempt, deletion of the remaining network resources failed because the workflow role lacked `ec2:DescribeNetworkInterfaces`.
 
-**Final-state verification should be based on the successful destroy run and checks in the AWS Console.** Screenshots captured while the infrastructure was running should be treated as deployment evidence, not proof that those resources still exist after cleanup.
+The IAM policy was updated to address the missing permission.
 
-The S3 backend and Terraform state should not be deleted as part of the ordinary development infrastructure teardown.
+This illustrates an important operational lesson: successfully provisioning infrastructure does not guarantee that the same role can destroy every resource. Terraform may need additional permissions to discover dependencies and remove resources in the correct order.
 
-## Repository Structure
+### Final-state verification
 
-The repository is organised around Terraform infrastructure code and GitHub Actions workflows.
+The successful destroy run and AWS Console checks should be used to verify cleanup.
+
+Resources shown in the deployment screenshots represent the environment when it was running; they should not be interpreted as proof that those resources still exist after teardown.
+
+The Terraform state bucket is retained separately from the development infrastructure. The destroy workflow should not be treated as confirmation that all potentially billable AWS resources, backups, or separately managed resources have been removed.
+
+## 9. Repository Structure
+
+The repository contains the Terraform configuration, GitHub Actions workflows, screenshots, and project documentation.
 
 ```text
 aws-devops-platform/
@@ -280,260 +293,223 @@ aws-devops-platform/
 ├── infra/
 │   └── Terraform configuration and backend files
 ├── screenshots/
-│   ├── A1-repository-structure.png
-│   ├── A2-terraform-code.png
-│   ├── B1-validation.png
-│   ├── B2-terraform-plan.png
-│   ├── B3-terraform-apply.png
-│   ├── C1-vpc-and-subnets.png
-│   ├── C2-rds-and-security-groups.png
-│   ├── C3-cloudwatch-alarms.png
-│   ├── D1-drift-created.png
-│   ├── D2-drift-detected-in-plan.png
-│   ├── D3-drift-remediated.png
-│   ├── E1-destroy-workflow.png
-│   ├── E2-destroy-success.png
-│   └── E3-aws-cleanup-verification.png
+│   └── Project evidence images
 └── README.md
 ```
 
-The screenshot filenames above are suggested examples. Adjust the structure and names to match the actual files committed to the repository.
+The screenshot directory contains evidence organised into five groups: repository and code, CI/CD deployment, AWS infrastructure, infrastructure drift, and cleanup.
 
-## Project Evidence and Screenshots
+## 10. Project Evidence and Screenshots
 
-This section documents the implementation through five groups of screenshots.
-
-The images should be uploaded to the repository's `screenshots/` directory. Each Markdown image path must match the corresponding filename and capitalisation exactly.
+The following screenshots document the project implementation from source code through deployment, drift testing, and teardown.
 
 ### A. GitHub Repository and Terraform Code
 
-This section demonstrates the repository structure, infrastructure configuration, and version-controlled implementation.
+This section demonstrates the repository structure and Terraform implementation.
 
-**A1 — Repository structure**
+**Repository structure**
 
-Shows the project folders, Terraform files, and GitHub Actions workflow directory.
+Shows the repository and its project files.
 
-![Image Alt](https://github.com/imed3721/aws-devops-platform/blob/82a12a6f044c8fb7f2e47a6c93947f5dcb08ed9a/screenshots/Screenshot%202026-10-19%20154158.png) 
+![GitHub repository structure](https://github.com/imed3721/aws-devops-platform/blob/82a12a6f044c8fb7f2e47a6c93947f5dcb08ed9a/screenshots/Screenshot%202026-10-19%20154158.png)
 
-**A2 — Terraform code**
+**Terraform configuration**
 
-Shows representative Terraform configuration used to define the AWS infrastructure.
+Shows the Terraform code used to define and manage the infrastructure.
 
-![Image Alt](https://github.com/imed3721/aws-devops-platform/blob/82a12a6f044c8fb7f2e47a6c93947f5dcb08ed9a/screenshots/Screenshot%202026-10-19%20154235.png) 
+![Terraform configuration 1](https://github.com/imed3721/aws-devops-platform/blob/82a12a6f044c8fb7f2e47a6c93947f5dcb08ed9a/screenshots/Screenshot%202026-10-19%20154235.png)
 
-![Image Alt](https://github.com/imed3721/aws-devops-platform/blob/82a12a6f044c8fb7f2e47a6c93947f5dcb08ed9a/screenshots/Screenshot%202026-10-19%20154245.png) 
+![Terraform configuration 2](https://github.com/imed3721/aws-devops-platform/blob/82a12a6f044c8fb7f2e47a6c93947f5dcb08ed9a/screenshots/Screenshot%202026-10-19%20154245.png)
 
-![Image Alt](https://github.com/imed3721/aws-devops-platform/blob/82a12a6f044c8fb7f2e47a6c93947f5dcb08ed9a/screenshots/Screenshot%202026-10-19%20154251.png) 
+![Terraform configuration 3](https://github.com/imed3721/aws-devops-platform/blob/82a12a6f044c8fb7f2e47a6c93947f5dcb08ed9a/screenshots/Screenshot%202026-10-19%20154251.png)
 
-![Image Alt](https://github.com/imed3721/aws-devops-platform/blob/82a12a6f044c8fb7f2e47a6c93947f5dcb08ed9a/screenshots/Screenshot%202026-10-19%20154318.png) 
+![Terraform configuration 4](https://github.com/imed3721/aws-devops-platform/blob/82a12a6f044c8fb7f2e47a6c93947f5dcb08ed9a/screenshots/Screenshot%202026-10-19%20154318.png)
 
-![Image Alt](https://github.com/imed3721/aws-devops-platform/blob/82a12a6f044c8fb7f2e47a6c93947f5dcb08ed9a/screenshots/Screenshot%202026-10-19%20154450.png) 
+![Terraform configuration 5](https://github.com/imed3721/aws-devops-platform/blob/82a12a6f044c8fb7f2e47a6c93947f5dcb08ed9a/screenshots/Screenshot%202026-10-19%20154450.png)
 
 ### B. CI/CD and Terraform Deployment
 
-This section demonstrates the automated workflow from validation to deployment.
+This section demonstrates automated validation, planning, and deployment using GitHub Actions.
 
-**B1 — Terraform validation**
+**Terraform validation**
 
-Shows the validation workflow and its result.
+![Terraform validation workflow 1](https://github.com/imed3721/aws-devops-platform/blob/f02babf3f5bdd8fe97a1aa36cba95f70b72dbe39/screenshots/Screenshot%202026-10-19%20154631.png)
 
-![Image Alt](https://github.com/imed3721/aws-devops-platform/blob/f02babf3f5bdd8fe97a1aa36cba95f70b72dbe39/screenshots/Screenshot%202026-10-19%20154631.png) 
+![Terraform validation workflow 2](https://github.com/imed3721/aws-devops-platform/blob/f02babf3f5bdd8fe97a1aa36cba95f70b72dbe39/screenshots/Screenshot%202026-10-19%20154653.png)
 
-![Image Alt](https://github.com/imed3721/aws-devops-platform/blob/f02babf3f5bdd8fe97a1aa36cba95f70b72dbe39/screenshots/Screenshot%202026-10-19%20154653.png) 
+![Terraform validation workflow 3](https://github.com/imed3721/aws-devops-platform/blob/d7086efc93323e58dab75338e543526275225e78/screenshots/Screenshot%202026-10-19%20165004.png)
 
-![Image Alt](https://github.com/imed3721/aws-devops-platform/blob/d7086efc93323e58dab75338e543526275225e78/screenshots/Screenshot%202026-10-19%20165004.png) 
+![Terraform validation workflow 4](https://github.com/imed3721/aws-devops-platform/blob/d7086efc93323e58dab75338e543526275225e78/screenshots/Screenshot%202026-10-19%20165020.png)
 
-![Image Alt](https://github.com/imed3721/aws-devops-platform/blob/d7086efc93323e58dab75338e543526275225e78/screenshots/Screenshot%202026-10-19%20165020.png) 
+![Terraform validation workflow 5](https://github.com/imed3721/aws-devops-platform/blob/d7086efc93323e58dab75338e543526275225e78/screenshots/Screenshot%202026-10-19%20165028.png)
 
-![Image Alt](https://github.com/imed3721/aws-devops-platform/blob/d7086efc93323e58dab75338e543526275225e78/screenshots/Screenshot%202026-10-19%20165028.png) 
+![Terraform validation workflow 6](https://github.com/imed3721/aws-devops-platform/blob/d7086efc93323e58dab75338e543526275225e78/screenshots/Screenshot%202026-10-19%20165035.png)
 
-![Image Alt](https://github.com/imed3721/aws-devops-platform/blob/d7086efc93323e58dab75338e543526275225e78/screenshots/Screenshot%202026-10-19%20165035.png) 
+**Terraform plan**
 
-**B2 — Terraform plan**
+![Terraform plan 1](https://github.com/imed3721/aws-devops-platform/blob/f02babf3f5bdd8fe97a1aa36cba95f70b72dbe39/screenshots/Screenshot%202026-10-19%20154714.png)
 
-Shows Terraform previewing the proposed infrastructure changes.
+![Terraform plan 2](https://github.com/imed3721/aws-devops-platform/blob/f02babf3f5bdd8fe97a1aa36cba95f70b72dbe39/screenshots/Screenshot%202026-10-19%20154724.png)
 
-![Image Alt](https://github.com/imed3721/aws-devops-platform/blob/f02babf3f5bdd8fe97a1aa36cba95f70b72dbe39/screenshots/Screenshot%202026-10-19%20154714.png) 
+![Terraform plan 3](https://github.com/imed3721/aws-devops-platform/blob/d7086efc93323e58dab75338e543526275225e78/screenshots/Screenshot%202026-10-19%20165104.png)
 
-![Image Alt](https://github.com/imed3721/aws-devops-platform/blob/f02babf3f5bdd8fe97a1aa36cba95f70b72dbe39/screenshots/Screenshot%202026-10-19%20154724.png) 
+![Terraform plan 4](https://github.com/imed3721/aws-devops-platform/blob/d7086efc93323e58dab75338e543526275225e78/screenshots/Screenshot%202026-10-19%20165112.png)
 
-![Image Alt](https://github.com/imed3721/aws-devops-platform/blob/d7086efc93323e58dab75338e543526275225e78/screenshots/Screenshot%202026-10-19%20165104.png) 
+**Terraform apply**
 
-![Image Alt](https://github.com/imed3721/aws-devops-platform/blob/d7086efc93323e58dab75338e543526275225e78/screenshots/Screenshot%202026-10-19%20165112.png)
+![Terraform apply 1](https://github.com/imed3721/aws-devops-platform/blob/f02babf3f5bdd8fe97a1aa36cba95f70b72dbe39/screenshots/Screenshot%202026-10-19%20155245.png)
 
-**B3 — Terraform apply**
+![Terraform apply 2](https://github.com/imed3721/aws-devops-platform/blob/f02babf3f5bdd8fe97a1aa36cba95f70b72dbe39/screenshots/Screenshot%202026-10-19%20155258.png)
 
-Shows the deployment workflow and the Terraform apply result.
+![Terraform apply 3](https://github.com/imed3721/aws-devops-platform/blob/d7086efc93323e58dab75338e543526275225e78/screenshots/Screenshot%202026-10-19%20165139.png)
 
-![Image Alt](https://github.com/imed3721/aws-devops-platform/blob/f02babf3f5bdd8fe97a1aa36cba95f70b72dbe39/screenshots/Screenshot%202026-10-19%20155245.png) 
-
-![Image Alt](https://github.com/imed3721/aws-devops-platform/blob/f02babf3f5bdd8fe97a1aa36cba95f70b72dbe39/screenshots/Screenshot%202026-10-19%20155258.png) 
-
-![Image Alt](https://github.com/imed3721/aws-devops-platform/blob/d7086efc93323e58dab75338e543526275225e78/screenshots/Screenshot%202026-10-19%20165139.png) 
-
-![Image Alt](https://github.com/imed3721/aws-devops-platform/blob/d7086efc93323e58dab75338e543526275225e78/screenshots/Screenshot%202026-10-19%20165147.png)
+![Terraform apply 4](https://github.com/imed3721/aws-devops-platform/blob/d7086efc93323e58dab75338e543526275225e78/screenshots/Screenshot%202026-10-19%20165147.png)
 
 ### C. Live AWS Infrastructure
 
-These screenshots document the AWS resources provisioned during the deployment stage.
+These screenshots document the AWS infrastructure during the deployment stage.
 
-**C1 — VPC and subnets**
+**VPC and subnets**
 
-Shows the development VPC and its configured subnets.
+![AWS VPC](https://github.com/imed3721/aws-devops-platform/blob/27470aa6da46e12fad990d7aa90b38a12eaeda15/screenshots/Screenshot%202026-10-19%20155937.png)
 
-![Image Alt](https://github.com/imed3721/aws-devops-platform/blob/27470aa6da46e12fad990d7aa90b38a12eaeda15/screenshots/Screenshot%202026-10-19%20155937.png) 
+![AWS subnets](https://github.com/imed3721/aws-devops-platform/blob/27470aa6da46e12fad990d7aa90b38a12eaeda15/screenshots/Screenshot%202026-10-19%20160013.png)
 
-![Image Alt](https://github.com/imed3721/aws-devops-platform/blob/27470aa6da46e12fad990d7aa90b38a12eaeda15/screenshots/Screenshot%202026-10-19%20160013.png) 
+**Amazon RDS**
 
-**C2 — RDS**
+![Amazon RDS configuration](https://github.com/imed3721/aws-devops-platform/blob/27470aa6da46e12fad990d7aa90b38a12eaeda15/screenshots/Screenshot%202026-10-19%20160043.png)
 
-Shows the database configuration.
+**CloudWatch alarms**
 
-![Image Alt](https://github.com/imed3721/aws-devops-platform/blob/27470aa6da46e12fad990d7aa90b38a12eaeda15/screenshots/Screenshot%202026-10-19%20160043.png) 
-
-**C3 — CloudWatch alarms**
-
-Shows the database monitoring alarms and their configured thresholds.
-
-![Image Alt](https://github.com/imed3721/aws-devops-platform/blob/27470aa6da46e12fad990d7aa90b38a12eaeda15/screenshots/Screenshot%202026-10-19%20165826.png) 
+![CloudWatch database alarms](https://github.com/imed3721/aws-devops-platform/blob/27470aa6da46e12fad990d7aa90b38a12eaeda15/screenshots/Screenshot%202026-10-19%20165826.png)
 
 ### D. Infrastructure Drift
 
-This section documents the controlled drift test and reconciliation process.
+This section documents the drift-testing process, from introducing a controlled change to detecting and reconciling it.
 
-**D1 — Drift introduced**
+**Drift introduced**
 
-Shows the controlled change made outside Terraform.
+![Infrastructure drift evidence 1](https://github.com/imed3721/aws-devops-platform/blob/82502cd517059ee0a3618ec6db8bec6caa588640/screenshots/Screenshot%202026-10-19%20145122.png)
 
-![Image Alt](https://github.com/imed3721/aws-devops-platform/blob/82502cd517059ee0a3618ec6db8bec6caa588640/screenshots/Screenshot%202026-10-19%20145122.png) 
+![Infrastructure drift evidence 2](https://github.com/imed3721/aws-devops-platform/blob/82502cd517059ee0a3618ec6db8bec6caa588640/screenshots/Screenshot%202026-10-19%20145217.png)
 
-![Image Alt](https://github.com/imed3721/aws-devops-platform/blob/82502cd517059ee0a3618ec6db8bec6caa588640/screenshots/Screenshot%202026-10-19%20145217.png) 
+![Infrastructure drift evidence 3](https://github.com/imed3721/aws-devops-platform/blob/82502cd517059ee0a3618ec6db8bec6caa588640/screenshots/Screenshot%202026-10-19%20145221.png)
 
-![Image Alt](https://github.com/imed3721/aws-devops-platform/blob/82502cd517059ee0a3618ec6db8bec6caa588640/screenshots/Screenshot%202026-10-19%20145221.png) 
+![Infrastructure drift evidence 4](https://github.com/imed3721/aws-devops-platform/blob/82502cd517059ee0a3618ec6db8bec6caa588640/screenshots/Screenshot%202026-10-19%20145226.png)
 
-![Image Alt](https://github.com/imed3721/aws-devops-platform/blob/82502cd517059ee0a3618ec6db8bec6caa588640/screenshots/Screenshot%202026-10-19%20145226.png) 
+**Drift detected by Terraform**
 
-**D2 — Drift detected**
+![Terraform drift detection 1](https://github.com/imed3721/aws-devops-platform/blob/82502cd517059ee0a3618ec6db8bec6caa588640/screenshots/Screenshot%202026-10-19%20150137.png)
 
-Shows the Terraform plan identifying the difference between the expected and actual configuration.
+![Terraform drift detection 2](https://github.com/imed3721/aws-devops-platform/blob/82502cd517059ee0a3618ec6db8bec6caa588640/screenshots/Screenshot%202026-10-19%20150144.png)
 
-![Image Alt](https://github.com/imed3721/aws-devops-platform/blob/82502cd517059ee0a3618ec6db8bec6caa588640/screenshots/Screenshot%202026-10-19%20150137.png) 
+**Drift remediation**
 
-![Image Alt](https://github.com/imed3721/aws-devops-platform/blob/82502cd517059ee0a3618ec6db8bec6caa588640/screenshots/Screenshot%202026-10-19%20150144.png) 
+![Infrastructure drift remediation 1](https://github.com/imed3721/aws-devops-platform/blob/82502cd517059ee0a3618ec6db8bec6caa588640/screenshots/Screenshot%202026-10-19%20150328.png)
 
-**D3 — Drift remediated**
+![Infrastructure drift remediation 2](https://github.com/imed3721/aws-devops-platform/blob/82502cd517059ee0a3618ec6db8bec6caa588640/screenshots/Screenshot%202026-10-19%20150333.png)
 
-Shows the result after the intended configuration has been restored and verified.
+![Infrastructure drift remediation 3](https://github.com/imed3721/aws-devops-platform/blob/82502cd517059ee0a3618ec6db8bec6caa588640/screenshots/Screenshot%202026-10-19%20150710.png)
 
-![Image Alt](https://github.com/imed3721/aws-devops-platform/blob/82502cd517059ee0a3618ec6db8bec6caa588640/screenshots/Screenshot%202026-10-19%20150328.png) 
-
-![Image Alt](https://github.com/imed3721/aws-devops-platform/blob/82502cd517059ee0a3618ec6db8bec6caa588640/screenshots/Screenshot%202026-10-19%20150333.png) 
-
-![Image Alt](https://github.com/imed3721/aws-devops-platform/blob/82502cd517059ee0a3618ec6db8bec6caa588640/screenshots/Screenshot%202026-10-19%20150710.png) 
-
-![Image Alt](https://github.com/imed3721/aws-devops-platform/blob/82502cd517059ee0a3618ec6db8bec6caa588640/screenshots/Screenshot%202026-10-19%20150824.png)
+![Infrastructure drift remediation 4](https://github.com/imed3721/aws-devops-platform/blob/82502cd517059ee0a3618ec6db8bec6caa588640/screenshots/Screenshot%202026-10-19%20150824.png)
 
 ### E. Cleanup and Final State
 
-This section documents the controlled teardown and verification of the development environment.
+This section documents the manual destruction workflow and the final-state evidence.
 
-**E1 — Destroy workflow**
+**Terraform Destroy workflow**
 
-Shows the manually triggered Terraform Destroy workflow.
+![Terraform destroy workflow 1](https://github.com/imed3721/aws-devops-platform/blob/2c5641eacfeea45dbc88bc32b86d8dfedfde3be6/screenshots/Screenshot%202026-10-19%20160526.png)
 
-![Image Alt](https://github.com/imed3721/aws-devops-platform/blob/2c5641eacfeea45dbc88bc32b86d8dfedfde3be6/screenshots/Screenshot%202026-10-19%20160526.png) 
+![Terraform destroy workflow 2](https://github.com/imed3721/aws-devops-platform/blob/2c5641eacfeea45dbc88bc32b86d8dfedfde3be6/screenshots/Screenshot%202026-10-19%20160535.png)
 
-![Image Alt](https://github.com/imed3721/aws-devops-platform/blob/2c5641eacfeea45dbc88bc32b86d8dfedfde3be6/screenshots/Screenshot%202026-10-19%20160535.png) 
+**Terraform destroy execution**
 
-**E2 — Destroy completed**
+![Terraform destroy result](https://github.com/imed3721/aws-devops-platform/blob/2c5641eacfeea45dbc88bc32b86d8dfedfde3be6/screenshots/Screenshot%202026-10-19%20161553.png)
 
-Shows the successful Terraform destroy execution.
+**AWS cleanup verification**
 
-![Image Alt](https://github.com/imed3721/aws-devops-platform/blob/2c5641eacfeea45dbc88bc32b86d8dfedfde3be6/screenshots/Screenshot%202026-10-19%20161553.png) 
+![AWS cleanup verification 1](https://github.com/imed3721/aws-devops-platform/blob/2c5641eacfeea45dbc88bc32b86d8dfedfde3be6/screenshots/Screenshot%202026-10-19%20162347.png)
 
-**E3 — AWS cleanup verification**
+![AWS cleanup verification 2](https://github.com/imed3721/aws-devops-platform/blob/2c5641eacfeea45dbc88bc32b86d8dfedfde3be6/screenshots/Screenshot%202026-10-19%20162403.png)
 
-Shows the AWS Console evidence confirming that the intended development resources have been removed.
+![AWS cleanup verification 3](https://github.com/imed3721/aws-devops-platform/blob/2c5641eacfeea45dbc88bc32b86d8dfedfde3be6/screenshots/Screenshot%202026-10-19%20162424.png)
 
-![Image Alt](https://github.com/imed3721/aws-devops-platform/blob/2c5641eacfeea45dbc88bc32b86d8dfedfde3be6/screenshots/Screenshot%202026-10-19%20162347.png) 
-
-![Image Alt](https://github.com/imed3721/aws-devops-platform/blob/2c5641eacfeea45dbc88bc32b86d8dfedfde3be6/screenshots/Screenshot%202026-10-19%20162403.png) 
-
-![Image Alt](https://github.com/imed3721/aws-devops-platform/blob/2c5641eacfeea45dbc88bc32b86d8dfedfde3be6/screenshots/Screenshot%202026-10-19%20162424.png) 
-
-## Key Skills Demonstrated
+## 11. Key Skills Demonstrated
 
 This project demonstrates practical experience with:
 
-- **Infrastructure as Code:** Defining AWS resources with Terraform.
-- **CI/CD automation:** Managing infrastructure workflows with GitHub Actions.
-- **Cloud authentication:** Configuring GitHub OIDC and AWS IAM role assumption.
-- **AWS networking:** Creating a VPC, subnets, and security groups.
-- **Database infrastructure:** Deploying and configuring Amazon RDS for PostgreSQL.
+- **Infrastructure as Code:** Defining and managing AWS resources using Terraform.
+- **CI/CD automation:** Building GitHub Actions workflows for infrastructure operations.
+- **Federated authentication:** Configuring GitHub OIDC and AWS IAM role assumption.
+- **AWS networking:** Creating VPCs, subnets, and security groups.
+- **Database infrastructure:** Configuring Amazon RDS for PostgreSQL.
 - **Cloud security:** Restricting database access and enabling storage encryption.
-- **Remote state management:** Using Amazon S3 and state locking.
-- **Monitoring:** Configuring CloudWatch alarms.
+- **Remote state management:** Using Amazon S3 and S3 lock-file support.
+- **Monitoring:** Configuring CloudWatch database alarms.
 - **Drift management:** Identifying and reconciling infrastructure differences.
-- **Operational troubleshooting:** Investigating IAM permission failures and resource dependencies.
-- **Infrastructure lifecycle management:** Planning, applying, and destroying development resources.
-- **Technical documentation:** Recording architecture, implementation, and verification evidence.
+- **Operational troubleshooting:** Investigating IAM permission errors and resource dependencies.
+- **Lifecycle management:** Planning, deploying, and destroying development infrastructure.
+- **Technical documentation:** Recording implementation and verification evidence.
 
-## Challenges and Lessons Learned
+## 12. Challenges and Lessons Learned
 
-### IAM permissions must support the complete lifecycle
+### IAM permissions must cover the complete lifecycle
 
-The initial destroy attempt exposed a missing EC2 network-interface discovery permission. Addressing the specific permission was necessary before Terraform could continue removing the remaining network resources.
+The initial teardown attempt exposed a missing network-interface discovery permission. Fixing the specific permission highlighted the importance of testing both provisioning and destruction with the intended IAM role.
 
-### Remote state is essential for repeatable operations
+### Remote state supports consistent infrastructure management
 
-Terraform relies on its state to track managed resources. Retaining the S3 backend helps maintain continuity across workflow runs and supports subsequent infrastructure operations.
+Terraform state records the resources Terraform manages. Retaining the remote backend allows future workflow runs to use the existing state rather than losing track of managed resources.
 
-### Private networking reduces exposure
+### Network restrictions reduce exposure
 
-The database is configured without public accessibility, and PostgreSQL ingress is restricted to the application security group. These controls demonstrate the principle of limiting network access to what is required.
+Private database placement and security group rules help limit access to the database to the intended network sources.
 
-### Plans and destructive operations require review
+### Destructive operations require deliberate controls
 
-Terraform plans provide useful visibility into proposed changes. A manually triggered destroy workflow adds a deliberate step before teardown, but safe operation still depends on reviewing the changes and verifying the outcome.
+A manually triggered destroy workflow provides an explicit action before removing resources. Reviewing the proposed changes and verifying the final result remain essential.
 
-### Evidence makes the implementation easier to evaluate
+### Evidence improves technical communication
 
-Organising screenshots by repository, deployment, live infrastructure, drift, and cleanup makes it easier for reviewers to follow the project lifecycle and understand the practical work involved.
+Organising screenshots into five groups makes the implementation easier to review and demonstrates the relationship between code, automation, AWS resources, drift testing, and cleanup.
 
-## Cost Management
+## 13. Cost Management
 
-AWS resources may incur charges while they are running, particularly managed database instances and related storage.
+AWS resources may incur charges while running, particularly managed database instances and associated storage.
 
-The project uses a development environment and includes a Terraform destroy workflow to support cleanup when the infrastructure is no longer needed.
+The project includes a Terraform Destroy workflow to support cleanup when the development environment is no longer required.
 
 After teardown:
 
-- Confirm the destroy workflow completed successfully.
-- Verify the intended VPC, subnets, security groups, RDS resources, and CloudWatch alarms have been removed.
-- Check for any separately managed resources or backups that may remain.
-- Retain the remote state bucket unless you intentionally decide to decommission the Terraform backend.
+- Confirm the destroy workflow completes successfully.
+- Verify that the intended VPC, subnets, security groups, RDS resources, and CloudWatch alarms have been removed.
+- Check for separately managed resources, backups, or other remaining billable services.
+- Retain the S3 state backend unless you deliberately decide to decommission it.
 
-The destroy workflow removes resources managed by the Terraform configuration; it does not guarantee that every potentially billable resource in the AWS account has been removed.
+Destroying the resources managed by Terraform does not automatically guarantee that every potentially billable resource in the AWS account has been removed.
 
-## Future Improvements
+## 14. Future Improvements
 
-Potential next steps for this project include:
+Potential improvements include:
 
-- Add automated Terraform formatting and validation checks to pull requests.
+- Add Terraform formatting and validation checks to pull requests.
 - Introduce separate development and production environments.
-- Configure mandatory reviewer approval for sensitive deployment and destruction workflows.
-- Further refine IAM permissions to follow least-privilege principles.
+- Configure required reviewers for sensitive deployment and destruction workflows.
+- Refine IAM permissions to follow least-privilege principles.
 - Add automated security scanning for Terraform configuration.
-- Add more comprehensive monitoring, logging, and alert notifications.
-- Improve the destroy workflow by saving and reviewing a specific destroy plan before execution.
-- Add automated tests and documented recovery procedures.
+- Expand monitoring, logging, and alert notifications.
+- Improve teardown safety by saving and reviewing a specific destroy plan before execution.
+- Add automated infrastructure tests and recovery documentation.
+
+---
 
 ## Conclusion
 
 The AWS DevOps Platform demonstrates an end-to-end approach to managing cloud infrastructure through code and automated workflows.
 
-By combining Terraform, GitHub Actions, OIDC authentication, private AWS networking, database monitoring, drift detection, and controlled teardown, the project illustrates key DevOps practices across the infrastructure lifecycle.
+By combining Terraform, GitHub Actions, OIDC authentication, private AWS networking, database monitoring, drift detection, and controlled teardown, the project showcases practical DevOps techniques across the infrastructure lifecycle.
 
-The repository and screenshot evidence provide a practical record of the implementation, the challenges encountered, and the operational processes used to manage the environment.
+The five evidence sections document the implementation from source code through deployment, drift testing, and cleanup, providing a clear record of the technical decisions and operational challenges involved.
 
-**Source code:** [github.com/imed3721/aws-devops-platform](https://github.com/imed3721/aws-devops-platform)
+**Explore the project:** [github.com/imed3721/aws-devops-platform](https://github.com/imed3721/aws-devops-platform)
