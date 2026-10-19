@@ -1,55 +1,55 @@
 name: Terraform Plan
 
 on:
-workflow_dispatch:
-
-permissions:
-contents: read
-
-concurrency:
-group: terraform-dev
-cancel-in-progress: false
-
-jobs:
-plan:
-name: Plan Development Infrastructure
-runs-on: ubuntu-latest
+  workflow_dispatch:
 
 permissions:
   contents: read
-  id-token: write
 
-steps:
-  - name: Check out repository
-    uses: actions/checkout@v4
+concurrency:
+  group: terraform-dev
+  cancel-in-progress: false
 
-  - name: Install Terraform
-    uses: hashicorp/setup-terraform@v3
-    with:
-      terraform_version: "1.10.5"
+jobs:
+  plan:
+    name: Plan Development Infrastructure
+    runs-on: ubuntu-latest
 
-  - name: Authenticate to AWS using OIDC
-    uses: aws-actions/configure-aws-credentials@v4
-    with:
-      role-to-assume: ${{ vars.AWS_ROLE_ARN }}
-      aws-region: eu-west-2
-      role-session-name: GitHubTerraformPlan
+    permissions:
+      contents: read
+      id-token: write
 
-  - name: Initialise Terraform
-    working-directory: infra
-    run: terraform init -input=false
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
 
-  - name: Create a saved Terraform plan
-    working-directory: infra
-    run: terraform plan -input=false -no-color -out=tfplan
+      - name: Install Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: "1.10.5"
 
-  - name: Display the plan for review
-    working-directory: infra
-    run: terraform show -no-color tfplan
+      - name: Authenticate to AWS using OIDC
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ vars.AWS_ROLE_ARN }}
+          aws-region: eu-west-2
+          role-session-name: GitHubTerraformPlan
 
-  - name: Upload the saved plan
-    uses: actions/upload-artifact@v4
-    with:
-      name: terraform-plan-${{ github.sha }}
-      path: infra/tfplan
-      retention-days: 1
+      - name: Initialise Terraform
+        working-directory: infra
+        run: terraform init -input=false
+
+      - name: Create a saved Terraform plan
+        working-directory: infra
+        run: terraform plan -input=false -no-color -out=tfplan
+
+      - name: Display the plan for review
+        working-directory: infra
+        run: terraform show -no-color tfplan
+
+      - name: Upload the saved plan
+        uses: actions/upload-artifact@v4
+        with:
+          name: terraform-plan-${{ github.sha }}
+          path: infra/tfplan
+          retention-days: 1
