@@ -439,23 +439,27 @@ This section documents the controlled teardown and verification of the developme
 
 **E1 — Destroy workflow**
 
-Shows the manually triggered Terraform Destroy workflow and its confirmation requirement.
+Shows the manually triggered Terraform Destroy workflow.
 
-![Terraform destroy workflow](screenshots/E1-destroy-workflow.png)
+![Image Alt](https://github.com/imed3721/aws-devops-platform/blob/2c5641eacfeea45dbc88bc32b86d8dfedfde3be6/screenshots/Screenshot%202026-10-19%20160526.png) 
+
+![Image Alt](https://github.com/imed3721/aws-devops-platform/blob/2c5641eacfeea45dbc88bc32b86d8dfedfde3be6/screenshots/Screenshot%202026-10-19%20160535.png) 
 
 **E2 — Destroy completed**
 
 Shows the successful Terraform destroy execution.
 
-![Successful Terraform destroy](screenshots/E2-destroy-success.png)
+![Image Alt](https://github.com/imed3721/aws-devops-platform/blob/2c5641eacfeea45dbc88bc32b86d8dfedfde3be6/screenshots/Screenshot%202026-10-19%20161553.png) 
 
 **E3 — AWS cleanup verification**
 
 Shows the AWS Console evidence confirming that the intended development resources have been removed.
 
-![AWS cleanup verification](screenshots/E3-aws-cleanup-verification.png)
+![Image Alt](https://github.com/imed3721/aws-devops-platform/blob/2c5641eacfeea45dbc88bc32b86d8dfedfde3be6/screenshots/Screenshot%202026-10-19%20162347.png) 
 
-*Only include screenshots that exist and accurately support the claims above. If cleanup or drift remediation is still in progress, update this section when you have verified the result.*
+![Image Alt](https://github.com/imed3721/aws-devops-platform/blob/2c5641eacfeea45dbc88bc32b86d8dfedfde3be6/screenshots/Screenshot%202026-10-19%20162403.png) 
+
+![Image Alt](https://github.com/imed3721/aws-devops-platform/blob/2c5641eacfeea45dbc88bc32b86d8dfedfde3be6/screenshots/Screenshot%202026-10-19%20162424.png) 
 
 ## Key Skills Demonstrated
 
