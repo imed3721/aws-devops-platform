@@ -1,0 +1,55 @@
+name: Terraform Destroy
+
+on:
+  workflow_dispatch:
+    inputs:
+      confirmation:
+        description: "Type DESTROY to remove the development infrastructure"
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: terraform-dev
+  cancel-in-progress: false
+
+jobs:
+  destroy:
+    name: Destroy Development Infrastructure
+    if: ${{ inputs.confirmation == 'DESTROY' }}
+    runs-on: ubuntu-latest
+    environment: dev
+
+    permissions:
+      contents: read
+      id-token: write
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Install Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: "1.10.5"
+
+      - name: Authenticate to AWS using OIDC
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ vars.AWS_ROLE_ARN }}
+          aws-region: eu-west-2
+          role-session-name: GitHubTerraformDestroy
+
+      - name: Initialise Terraform
+        working-directory: infra
+        run: terraform init -input=false
+
+      - name: Preview resources to be destroyed
+        working-directory: infra
+        run: terraform plan -destroy -input=false -no-color
+
+      - name: Destroy development infrastructure
+        working-directory: infra
+        run: terraform destroy -input=false -auto-approve
