@@ -17,11 +17,11 @@ resource "aws_db_instance" "postgres" {
   vpc_security_group_ids = [aws_security_group.database.id]
   publicly_accessible    = false
 
-  multi_az                     = false
-  backup_retention_period      = 1
-  auto_minor_version_upgrade   = true
-  deletion_protection          = false
-  skip_final_snapshot          = true
+  multi_az                   = false
+  backup_retention_period    = 1
+  auto_minor_version_upgrade = true
+  deletion_protection        = false
+  skip_final_snapshot        = true
 
   tags = {
     Name = "devops-platform-postgres"
