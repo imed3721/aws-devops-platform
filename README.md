@@ -341,7 +341,13 @@ Shows the validation workflow and its result.
 
 ![Image Alt](https://github.com/imed3721/aws-devops-platform/blob/f02babf3f5bdd8fe97a1aa36cba95f70b72dbe39/screenshots/Screenshot%202026-10-19%20154653.png) 
 
-![Image Alt]() 
+![Image Alt](https://github.com/imed3721/aws-devops-platform/blob/d7086efc93323e58dab75338e543526275225e78/screenshots/Screenshot%202026-10-19%20165004.png) 
+
+![Image Alt](https://github.com/imed3721/aws-devops-platform/blob/d7086efc93323e58dab75338e543526275225e78/screenshots/Screenshot%202026-10-19%20165020.png) 
+
+![Image Alt](https://github.com/imed3721/aws-devops-platform/blob/d7086efc93323e58dab75338e543526275225e78/screenshots/Screenshot%202026-10-19%20165028.png) 
+
+![Image Alt](https://github.com/imed3721/aws-devops-platform/blob/d7086efc93323e58dab75338e543526275225e78/screenshots/Screenshot%202026-10-19%20165035.png) 
 
 **B2 — Terraform plan**
 
@@ -351,7 +357,9 @@ Shows Terraform previewing the proposed infrastructure changes.
 
 ![Image Alt](https://github.com/imed3721/aws-devops-platform/blob/f02babf3f5bdd8fe97a1aa36cba95f70b72dbe39/screenshots/Screenshot%202026-10-19%20154724.png) 
 
-![Image Alt]() 
+![Image Alt](https://github.com/imed3721/aws-devops-platform/blob/d7086efc93323e58dab75338e543526275225e78/screenshots/Screenshot%202026-10-19%20165104.png) 
+
+![Image Alt](https://github.com/imed3721/aws-devops-platform/blob/d7086efc93323e58dab75338e543526275225e78/screenshots/Screenshot%202026-10-19%20165112.png)
 
 **B3 — Terraform apply**
 
@@ -361,8 +369,9 @@ Shows the deployment workflow and the Terraform apply result.
 
 ![Image Alt](https://github.com/imed3721/aws-devops-platform/blob/f02babf3f5bdd8fe97a1aa36cba95f70b72dbe39/screenshots/Screenshot%202026-10-19%20155258.png) 
 
-![Image Alt]() 
+![Image Alt](https://github.com/imed3721/aws-devops-platform/blob/d7086efc93323e58dab75338e543526275225e78/screenshots/Screenshot%202026-10-19%20165139.png) 
 
+![Image Alt](https://github.com/imed3721/aws-devops-platform/blob/d7086efc93323e58dab75338e543526275225e78/screenshots/Screenshot%202026-10-19%20165147.png)
 
 ### C. Live AWS Infrastructure
 
@@ -372,19 +381,21 @@ These screenshots document the AWS resources provisioned during the deployment s
 
 Shows the development VPC and its configured subnets.
 
-![AWS VPC and subnets](screenshots/C1-vpc-and-subnets.png)
+![Image Alt](https://github.com/imed3721/aws-devops-platform/blob/27470aa6da46e12fad990d7aa90b38a12eaeda15/screenshots/Screenshot%202026-10-19%20155937.png) 
 
-**C2 — RDS and security groups**
+![Image Alt](https://github.com/imed3721/aws-devops-platform/blob/27470aa6da46e12fad990d7aa90b38a12eaeda15/screenshots/Screenshot%202026-10-19%20160013.png) 
 
-Shows the database configuration and relevant network security controls.
+**C2 — RDS**
 
-![Amazon RDS and security groups](screenshots/C2-rds-and-security-groups.png)
+Shows the database configuration.
+
+![Image Alt](https://github.com/imed3721/aws-devops-platform/blob/27470aa6da46e12fad990d7aa90b38a12eaeda15/screenshots/Screenshot%202026-10-19%20160043.png) 
 
 **C3 — CloudWatch alarms**
 
 Shows the database monitoring alarms and their configured thresholds.
 
-![CloudWatch database alarms](screenshots/C3-cloudwatch-alarms.png)
+![Image Alt](https://github.com/imed3721/aws-devops-platform/blob/27470aa6da46e12fad990d7aa90b38a12eaeda15/screenshots/Screenshot%202026-10-19%20165826.png) 
 
 ### D. Infrastructure Drift
 
