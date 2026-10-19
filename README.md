@@ -373,19 +373,33 @@ This section documents the controlled drift test and reconciliation process.
 
 Shows the controlled change made outside Terraform.
 
-![Infrastructure drift introduced](screenshots/D1-drift-created.png)
+![Image Alt](https://github.com/imed3721/aws-devops-platform/blob/82502cd517059ee0a3618ec6db8bec6caa588640/screenshots/Screenshot%202026-10-19%20145122.png) 
+
+![Image Alt](https://github.com/imed3721/aws-devops-platform/blob/82502cd517059ee0a3618ec6db8bec6caa588640/screenshots/Screenshot%202026-10-19%20145217.png) 
+
+![Image Alt](https://github.com/imed3721/aws-devops-platform/blob/82502cd517059ee0a3618ec6db8bec6caa588640/screenshots/Screenshot%202026-10-19%20145221.png) 
+
+![Image Alt](https://github.com/imed3721/aws-devops-platform/blob/82502cd517059ee0a3618ec6db8bec6caa588640/screenshots/Screenshot%202026-10-19%20145226.png) 
 
 **D2 — Drift detected**
 
 Shows the Terraform plan identifying the difference between the expected and actual configuration.
 
-![Terraform drift detection](screenshots/D2-drift-detected-in-plan.png)
+![Image Alt](https://github.com/imed3721/aws-devops-platform/blob/82502cd517059ee0a3618ec6db8bec6caa588640/screenshots/Screenshot%202026-10-19%20150137.png) 
+
+![Image Alt](https://github.com/imed3721/aws-devops-platform/blob/82502cd517059ee0a3618ec6db8bec6caa588640/screenshots/Screenshot%202026-10-19%20150144.png) 
 
 **D3 — Drift remediated**
 
 Shows the result after the intended configuration has been restored and verified.
 
-![Infrastructure drift remediation](screenshots/D3-drift-remediated.png)
+![Image Alt](https://github.com/imed3721/aws-devops-platform/blob/82502cd517059ee0a3618ec6db8bec6caa588640/screenshots/Screenshot%202026-10-19%20150328.png) 
+
+![Image Alt](https://github.com/imed3721/aws-devops-platform/blob/82502cd517059ee0a3618ec6db8bec6caa588640/screenshots/Screenshot%202026-10-19%20150333.png) 
+
+![Image Alt](https://github.com/imed3721/aws-devops-platform/blob/82502cd517059ee0a3618ec6db8bec6caa588640/screenshots/Screenshot%202026-10-19%20150710.png) 
+
+![Image Alt](https://github.com/imed3721/aws-devops-platform/blob/82502cd517059ee0a3618ec6db8bec6caa588640/screenshots/Screenshot%202026-10-19%20150824.png)
 
 ### E. Cleanup and Final State
 
