@@ -313,13 +313,21 @@ This section demonstrates the repository structure, infrastructure configuration
 
 Shows the project folders, Terraform files, and GitHub Actions workflow directory.
 
-![GitHub repository structure](screenshots/A1-repository-structure.png)
+![Image Alt](https://github.com/imed3721/aws-devops-platform/blob/82a12a6f044c8fb7f2e47a6c93947f5dcb08ed9a/screenshots/Screenshot%202026-10-19%20154158.png) 
 
 **A2 — Terraform code**
 
 Shows representative Terraform configuration used to define the AWS infrastructure.
 
-![Terraform infrastructure code](screenshots/A2-terraform-code.png)
+![Image Alt](https://github.com/imed3721/aws-devops-platform/blob/82a12a6f044c8fb7f2e47a6c93947f5dcb08ed9a/screenshots/Screenshot%202026-10-19%20154235.png) 
+
+![Image Alt](https://github.com/imed3721/aws-devops-platform/blob/82a12a6f044c8fb7f2e47a6c93947f5dcb08ed9a/screenshots/Screenshot%202026-10-19%20154245.png) 
+
+![Image Alt](https://github.com/imed3721/aws-devops-platform/blob/82a12a6f044c8fb7f2e47a6c93947f5dcb08ed9a/screenshots/Screenshot%202026-10-19%20154251.png) 
+
+![Image Alt](https://github.com/imed3721/aws-devops-platform/blob/82a12a6f044c8fb7f2e47a6c93947f5dcb08ed9a/screenshots/Screenshot%202026-10-19%20154318.png) 
+
+![Image Alt](https://github.com/imed3721/aws-devops-platform/blob/82a12a6f044c8fb7f2e47a6c93947f5dcb08ed9a/screenshots/Screenshot%202026-10-19%20154450.png) 
 
 ### B. CI/CD and Terraform Deployment
 
@@ -329,19 +337,32 @@ This section demonstrates the automated workflow from validation to deployment.
 
 Shows the validation workflow and its result.
 
-![Terraform validation workflow](screenshots/B1-validation.png)
+![Image Alt](https://github.com/imed3721/aws-devops-platform/blob/f02babf3f5bdd8fe97a1aa36cba95f70b72dbe39/screenshots/Screenshot%202026-10-19%20154631.png) 
+
+![Image Alt](https://github.com/imed3721/aws-devops-platform/blob/f02babf3f5bdd8fe97a1aa36cba95f70b72dbe39/screenshots/Screenshot%202026-10-19%20154653.png) 
+
+![Image Alt]() 
 
 **B2 — Terraform plan**
 
 Shows Terraform previewing the proposed infrastructure changes.
 
-![Terraform plan workflow](screenshots/B2-terraform-plan.png)
+![Image Alt](https://github.com/imed3721/aws-devops-platform/blob/f02babf3f5bdd8fe97a1aa36cba95f70b72dbe39/screenshots/Screenshot%202026-10-19%20154714.png) 
+
+![Image Alt](https://github.com/imed3721/aws-devops-platform/blob/f02babf3f5bdd8fe97a1aa36cba95f70b72dbe39/screenshots/Screenshot%202026-10-19%20154724.png) 
+
+![Image Alt]() 
 
 **B3 — Terraform apply**
 
 Shows the deployment workflow and the Terraform apply result.
 
-![Terraform apply workflow](screenshots/B3-terraform-apply.png)
+![Image Alt](https://github.com/imed3721/aws-devops-platform/blob/f02babf3f5bdd8fe97a1aa36cba95f70b72dbe39/screenshots/Screenshot%202026-10-19%20155245.png) 
+
+![Image Alt](https://github.com/imed3721/aws-devops-platform/blob/f02babf3f5bdd8fe97a1aa36cba95f70b72dbe39/screenshots/Screenshot%202026-10-19%20155258.png) 
+
+![Image Alt]() 
+
 
 ### C. Live AWS Infrastructure
 
